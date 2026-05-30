@@ -1,0 +1,112 @@
+@import 'tailwindcss';
+
+
+:root {
+  /* Portfolio dark theme — always dark */
+  --background: oklch(0.10 0.008 264);
+  --foreground: oklch(0.96 0.004 264);
+  --card: oklch(0.13 0.010 264);
+  --card-foreground: oklch(0.96 0.004 264);
+  --popover: oklch(0.13 0.010 264);
+  --popover-foreground: oklch(0.96 0.004 264);
+  --primary: oklch(0.68 0.18 220);
+  --primary-foreground: oklch(0.10 0.008 264);
+  --secondary: oklch(0.17 0.012 264);
+  --secondary-foreground: oklch(0.80 0.008 264);
+  --muted: oklch(0.17 0.012 264);
+  --muted-foreground: oklch(0.52 0.010 264);
+  --accent: oklch(0.22 0.018 220);
+  --accent-foreground: oklch(0.68 0.18 220);
+  --destructive: oklch(0.60 0.22 25);
+  --destructive-foreground: oklch(0.96 0.004 264);
+  --border: oklch(0.22 0.012 264);
+  --input: oklch(0.18 0.012 264);
+  --ring: oklch(0.68 0.18 220);
+  --radius: 0.5rem;
+
+  /* Custom portfolio tokens */
+  --orb-primary: oklch(0.55 0.22 220);
+  --orb-secondary: oklch(0.45 0.20 250);
+  --grid-line: oklch(0.22 0.012 264 / 0.5);
+  --chip-bg: oklch(0.18 0.020 220);
+  --chip-border: oklch(0.30 0.035 220);
+  --chip-text: oklch(0.72 0.14 220);
+
+  /* Tailwind theme mappings */
+  --font-sans: 'Inter', 'Inter Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Geist Mono', ui-monospace, monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+* {
+  border-color: var(--border);
+  outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+@keyframes orb-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.85;
+  }
+}
+
+@keyframes orb-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -20px) scale(1.05);
+  }
+  66% {
+    transform: translate(-20px, 15px) scale(0.95);
+  }
+}
+
+.orb-pulse {
+  animation: orb-pulse 6s ease-in-out infinite;
+}
+
+.orb-drift {
+  animation: orb-drift 12s ease-in-out infinite;
+}
+/* ─── Premium Application Resets ───────────────────────────── */
+
+/* 1. Force the custom cursor EVERYWHERE (override links and buttons) */
+/* ─── NUCLEAR CURSOR RESET ───────────────────────────── */
+/* This forces every single element, link, and button to hide the cursor */
+*, *::before, *::after {
+  cursor: none !important;
+}
