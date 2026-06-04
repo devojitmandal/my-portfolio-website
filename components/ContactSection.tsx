@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, TerminalSquare, ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
+import {  TerminalSquare, ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
+import emailjs from "@emailjs/browser";
 
 // --- OFFICIAL BRAND SVGS ---
 function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -23,6 +24,8 @@ function LinkedinIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function ContactSection() {
   const [terminalInput, setTerminalInput] = useState("");
+  const [senderEmail, setSenderEmail] = useState("");
+  const [transmissionFailed, setTransmissionFailed] = useState(false);
   const [isTransmitting, setIsTransmitting] = useState(false);
   const [transmissionComplete, setTransmissionComplete] = useState(false);
   
@@ -36,21 +39,43 @@ export function ContactSection() {
     }
   }, [isTransmitting, transmissionComplete]);
 
-  const handleTerminalSubmit = (e: React.FormEvent) => {
+  const handleTerminalSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (!terminalInput.trim()) return;
+    if (!terminalInput.trim() || !senderEmail.trim()) return;
     
     setIsTransmitting(true);
+    setTransmissionFailed(false);
     
-    setTimeout(() => {
+    try {
+      // --- EMAILJS INTEGRATION ---
+      await emailjs.send(
+        "service_d3pkjcl",   // Replace with your Service ID
+        "template_4mi8b7h",  // Replace with your Template ID
+        {
+          reply_to: senderEmail,
+          message: terminalInput,
+        },
+        "Gh5PsCxhr-SL1avGc"    // Replace with your Public Key
+      );
+
       setIsTransmitting(false);
       setTransmissionComplete(true);
       setTerminalInput("");
+      setSenderEmail(""); // Clear the email input too
       
       setTimeout(() => {
         setTransmissionComplete(false);
       }, 5000);
-    }, 2500);
+
+    } catch (error) {
+      console.error("EmailJS Error:", error);
+      setIsTransmitting(false);
+      setTransmissionFailed(true); // Trigger the error UI
+      
+      setTimeout(() => {
+        setTransmissionFailed(false);
+      }, 5000);
+    }
   };
 
   return (
