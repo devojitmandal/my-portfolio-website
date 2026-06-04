@@ -25,7 +25,8 @@ const projects = [
     images: [
       "/projects/Advanced-Biometric-Watch-v3.0.png",
       "/projects/Advanced-Biometric-Watch-v3.0-2.png",
-    ]
+    ],
+    githubUrl: 'https://github.com/devojitmandal/Advanced-Biometric-Watch-v3.0',
   },
   {
     id: '02',
@@ -46,7 +47,8 @@ const projects = [
     images: [
       "/projects/student-management.png",
       "/projects/student-management-2.png",
-    ]
+    ],
+    githubUrl: 'https://github.com/devojitmandal/Student-Management-System-in-C/blob/main/main.c',
   },
   {
     id: '03',
@@ -66,7 +68,8 @@ const projects = [
     images: [
       "/projects/Resilience-Hub-Homepage.png",
       "/projects/Resilience-Hub-Signup.png",
-    ]
+    ],
+    githubUrl: 'https://github.com/devojitmandal/resiliencehub',
   },
   {
     id: '04',
@@ -86,7 +89,8 @@ const projects = [
     images: [
       "/projects/iot-vital-signs-monitor.png",
       "/projects/iot-vital-signs-monitor-2.png",
-    ]
+    ],
+    githubUrl: 'https://github.com/devojitmandal/iot-vital-signs-monitor/blob/main/firmware.ino',
     
   },
   {
@@ -108,7 +112,8 @@ const projects = [
     images: [
       "/projects/Personal-System-Architecture.png",
       "/projects/Personal-System-Architecture-2.png",
-    ]
+    ],
+    githubUrl: 'https://github.com/devojitmandal/my-portfolio-website',
   },
 ];
 
@@ -129,12 +134,11 @@ export function SelectedWork() {
       </div>
 
       {/* Projects Grid */}
-      {/* Added perspective to the parent so the 3D hinge effect works */}
       <div 
       className="grid grid-cols-1 gap-[1px] bg-white/10 border-[0.5px] border-white/10 rounded-xl overflow-hidden w-full"
       style={{ perspective: "1000px" }}
       >
-      {projects.map((project, index) => { // Make sure to pass 'index' here!
+      {projects.map((project, index) => { 
         const isExpanded = expandedId === project.id;
 
           return (
@@ -146,7 +150,7 @@ export function SelectedWork() {
               whileInView={{ opacity: 1, rotateX: 0, y: 0, filter: "blur(0px)" }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ 
-                delay: index * 0.15, // Staggers them perfectly down the list
+                delay: index * 0.15,
                 type: "spring", 
                 stiffness: 120, 
                 damping: 14,
@@ -290,9 +294,14 @@ export function SelectedWork() {
 
                       {/* View Source Button */}
                       <div className="mt-8 flex justify-end">
-                        <button className="flex items-center gap-2 text-[12px] font-medium text-[#fafaf8] bg-white/5 px-4 py-2 rounded border-[0.5px] border-white/10 transition-colors hover:bg-white/10">
+                        <a 
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-[12px] font-medium text-[#fafaf8] bg-white/5 px-4 py-2 rounded border-[0.5px] border-white/10 transition-colors hover:bg-white/10"
+                        >
                           View Code <ArrowUpRight className="w-3 h-3" />
-                        </button>
+                        </a>
                       </div>
 
                     </div>

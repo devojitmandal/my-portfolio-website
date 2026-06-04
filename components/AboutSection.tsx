@@ -11,7 +11,8 @@ export function AboutSection() {
   const rounded = useTransform(count, (latest) => Math.round(latest));
   const displayText = useTransform(rounded, (latest) => directiveText.slice(0, latest));
 
-  const textRef = useRef(null);
+  // 1. TYPINGS FIXED HERE
+  const textRef = useRef<HTMLDivElement>(null);
   const isTextInView = useInView(textRef, { once: true, margin: "-100px" });
 
   useEffect(() => {
@@ -23,7 +24,7 @@ export function AboutSection() {
       });
     }
   }, [isTextInView, count, directiveText.length]);
-  // ----------------------
+
   return (
     <section id="about" className="relative w-full py-24 z-10 border-t border-white/5">
       
@@ -38,7 +39,6 @@ export function AboutSection() {
         </p>
       </div>
 
-      {/* Increased gap for breathing room between columns */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
         
         {/* 1. NAKED TEXT NARRATIVE (No Glass Box) */}
@@ -99,6 +99,7 @@ export function AboutSection() {
             <ul className="space-y-4 font-mono text-xs relative z-10">
               <li className="flex justify-between items-end border-b border-white/5 pb-2">
                 <span className="text-white/40 text-[9px]">OPERATIVE</span>
+                {/* 2. IDENTITY FIXED HERE */}
                 <span className="text-white">DEVOJIT MANDAL</span>
               </li>
               <li className="flex justify-between items-end border-b border-white/5 pb-2">
@@ -107,6 +108,7 @@ export function AboutSection() {
               </li>
               <li className="flex justify-between items-end border-b border-white/5 pb-2">
                 <span className="text-white/40 text-[9px]">VTU_USN</span>
+                {/* 3. IDENTITY FIXED HERE */}
                 <span className="text-white">1AY25EC045</span>
               </li>
               <li className="flex justify-between items-end pb-1">
@@ -142,8 +144,7 @@ export function AboutSection() {
                 {/* Solid, non-glass action button */}
                 <a 
                   href="/resume.pdf" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                  download="MY_RESUME_2026.pdf"
                   className="group flex items-center justify-between p-3 bg-teal-500 text-black hover:bg-teal-400 transition-colors rounded-sm shadow-[0_0_15px_rgba(20,184,166,0.3)]"
                 >
                   <div className="flex items-center gap-3">
