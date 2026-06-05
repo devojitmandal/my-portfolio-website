@@ -1,5 +1,6 @@
 "use client";
-
+// FORCING VERCEL UPDATE 1.0
+// 1. TYPINGS FIXED HERE
 import { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Stars, useGLTF } from "@react-three/drei";
