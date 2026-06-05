@@ -21,20 +21,25 @@ function GameScene({ gameState, setGameState, setScore }: any) {
   const { scene } = useGLTF('/ufo.glb');
   useEffect(() => {
     scene.traverse((child) => {
-      // @ts-ignore
-      if (child.isMesh) {
+      // Tell TypeScript to treat this generic child as a specific 3D Mesh
+      const mesh = child as THREE.Mesh;
+      
+      if (mesh.isMesh) {
+        // Tell TypeScript we are working with a standard material
+        const material = mesh.material as THREE.MeshStandardMaterial;
+
         // 1. Strip away any baked-in image textures hiding our color
-        child.material.map = null; 
+        material.map = null; 
 
         // 2. Apply the Rusty Iron base color
-        child.material.color = new THREE.Color("#b7410e"); 
+        material.color = new THREE.Color("#b7410e"); 
 
         // 3. Alter the physical material properties
-        child.material.roughness = 0.65; // Rust is very rough, so it won't reflect much light
-        child.material.metalness = 0.4;  // It's still metal, but dulled and oxidized
+        material.roughness = 0.65;
+        material.metalness = 0.4;
 
         // 4. Force Three.js to recompile the material
-        child.material.needsUpdate = true;
+        material.needsUpdate = true;
       }
     });
   }, [scene]);
