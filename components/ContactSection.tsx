@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {  TerminalSquare, ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
-import emailjs from "@emailjs/browser";
+import { ArrowUpRight, Copy, CheckCircle2, Mail, Network } from "lucide-react";
 
 // --- OFFICIAL BRAND SVGS ---
 function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -23,74 +22,32 @@ function LinkedinIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export function ContactSection() {
-  const [terminalInput, setTerminalInput] = useState("");
-  const [senderEmail, setSenderEmail] = useState("");
-  const [transmissionFailed, setTransmissionFailed] = useState(false);
-  const [isTransmitting, setIsTransmitting] = useState(false);
-  const [transmissionComplete, setTransmissionComplete] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   
-  const terminalEndRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    // ONLY trigger the scroll if a transmission is actively happening or just finished.
-    // This stops it from firing on initial page load.
-    if ((isTransmitting || transmissionComplete) && terminalEndRef.current) {
-      terminalEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [isTransmitting, transmissionComplete]);
+  // REPLACE THIS WITH YOUR ACTUAL EMAIL
+  const emailAddress = "devojitmandal9876@gmail.com"; 
 
-  const handleTerminalSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    if (!terminalInput.trim() || !senderEmail.trim()) return;
-    
-    setIsTransmitting(true);
-    setTransmissionFailed(false);
-    
-    try {
-      // --- EMAILJS INTEGRATION ---
-      await emailjs.send(
-        "service_d3pkjcl",   // Replace with your Service ID
-        "template_4mi8b7h",  // Replace with your Template ID
-        {
-          reply_to: senderEmail,
-          message: terminalInput,
-        },
-        "Gh5PsCxhr-SL1avGc"    // Replace with your Public Key
-      );
-
-      setIsTransmitting(false);
-      setTransmissionComplete(true);
-      setTerminalInput("");
-      setSenderEmail(""); // Clear the email input too
-      
-      setTimeout(() => {
-        setTransmissionComplete(false);
-      }, 5000);
-
-    } catch (error) {
-      console.error("EmailJS Error:", error);
-      setIsTransmitting(false);
-      setTransmissionFailed(true); // Trigger the error UI
-      
-      setTimeout(() => {
-        setTransmissionFailed(false);
-      }, 5000);
-    }
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText(emailAddress);
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 2500); // Resets back to normal after 2.5 seconds
   };
 
   return (
-    <section id="contact" className="relative w-full py-24 z-10 border-t border-white/5">
+    <section id="contact" className="relative w-full py-32 z-10">
       
       {/* ANIMATED SECTION HEADER */}
-      <div className="mb-16 flex items-center gap-4">
+      <div className="mb-16 flex items-center gap-4 max-w-4xl mx-auto px-6">
         <motion.span 
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="font-mono text-[11px] text-teal-500 tracking-[0.3em] uppercase whitespace-nowrap"
+          className="font-mono text-[11px] text-[#888] tracking-[0.3em] uppercase whitespace-nowrap flex items-center gap-2"
         >
-          // SECURE_COMMUNICATIONS
+          <Network className="w-3 h-3" /> // CONTACT_ME
         </motion.span>
         
         <motion.div 
@@ -98,7 +55,7 @@ export function ContactSection() {
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="flex-grow h-[1px] bg-gradient-to-r from-teal-500/50 via-teal-500/10 to-transparent origin-left"
+          className="flex-grow h-[1px] bg-gradient-to-r from-white/20 via-white/5 to-transparent origin-left"
         />
       </div>
 
@@ -107,158 +64,109 @@ export function ContactSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.6 }}
-        className="max-w-3xl mx-auto"
+        className="max-w-4xl mx-auto px-6"
       >
-        {/* THE TERMINAL CONSOLE */}
-        <div className="rounded border border-white/10 bg-[#050505] overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.5)] relative">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           
-          <div className="absolute top-2 left-2 w-1 h-1 rounded-full bg-white/20 shadow-[inset_0_1px_1px_rgba(0,0,0,1)] z-10"></div>
-          <div className="absolute top-2 right-2 w-1 h-1 rounded-full bg-white/20 shadow-[inset_0_1px_1px_rgba(0,0,0,1)] z-10"></div>
-          <div className="absolute bottom-2 left-2 w-1 h-1 rounded-full bg-white/20 shadow-[inset_0_1px_1px_rgba(0,0,0,1)] z-10"></div>
-          <div className="absolute bottom-2 right-2 w-1 h-1 rounded-full bg-white/20 shadow-[inset_0_1px_1px_rgba(0,0,0,1)] z-10"></div>
+          {/* PRIMARY NODE: EMAIL COPY BUTTON (Spans both columns on desktop) */}
+          <button 
+            onClick={handleCopyEmail}
+            className={`group relative md:col-span-2 flex flex-col sm:flex-row items-start sm:items-center gap-6 md:gap-8 p-8 md:p-10 rounded-xl bg-black/40 backdrop-blur-xl border transition-all duration-500 overflow-hidden ${
+              isCopied ? 'border-teal-500/50 shadow-[0_0_30px_rgba(45,212,191,0.15)]' : 'border-white/10 hover:border-white/30 hover:bg-white/[0.02]'
+            }`}
+          >
+            {/* Background Pulse Effect on Copy */}
+            <AnimatePresence>
+              {isCopied && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 bg-teal-500/5 pointer-events-none"
+                />
+              )}
+            </AnimatePresence>
 
-          <div className="flex items-center px-4 py-2 bg-white/[0.02] border-b border-white/5">
-            <div className="flex gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50"></div>
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-500/20 border border-amber-500/50"></div>
-              <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/50"></div>
+            <div className={`shrink-0 w-14 h-14 rounded-full flex items-center justify-center border transition-colors duration-500 z-10 ${
+              isCopied ? 'bg-teal-500/20 border-teal-500/50 text-teal-400' : 'bg-white/5 border-white/10 text-white/50 group-hover:text-white'
+            }`}>
+              {isCopied ? <CheckCircle2 className="w-6 h-6" /> : <Mail className="w-6 h-6" />}
             </div>
-            <div className="mx-auto font-mono text-[10px] text-white/30 uppercase tracking-widest flex items-center gap-2">
-              <TerminalSquare className="w-3 h-3" />
-              bash — sys_admin@blr_node
-            </div>
-          </div>
 
-          <div className="p-6 md:p-8 flex flex-col gap-8 max-h-[500px] overflow-y-auto scrollbar-hide">
+            <div className="flex flex-col text-left z-10">
+              <span className="font-mono text-[10px] text-white/40 tracking-[0.2em] uppercase mb-2">
+                Primary_Communication_Protocol
+              </span>
+              <span className={`text-xl md:text-3xl font-bold tracking-tight transition-colors duration-500 mb-4 ${
+                isCopied ? 'text-teal-400' : 'text-white'
+              }`}>
+                {emailAddress}
+              </span>
+
+              {/* MOVED HERE: Now perfectly stacked under the email! */}
+              <div className="flex items-center gap-2">
+                <span className={`font-mono text-xs uppercase tracking-widest transition-colors duration-500 ${
+                  isCopied ? 'text-teal-400 font-bold' : 'text-white/30 group-hover:text-white/60'
+                }`}>
+                  {isCopied ? '[ COPIED TO CLIPBOARD ]' : 'COPY_ADDRESS'}
+                </span>
+                {!isCopied && <Copy className="w-4 h-4 text-white/20 group-hover:text-white/60 transition-colors" />}
+              </div>
+            </div>
+          </button>
+
+          {/* SECONDARY NODE 1: LINKEDIN */}
+          <a 
+            href="https://www.linkedin.com/in/devojit-mandal/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="group flex flex-col justify-between p-8 rounded-xl bg-black/40 backdrop-blur-xl border border-white/10 hover:border-blue-500/50 hover:bg-blue-500/5 transition-all duration-500 min-h-[200px]"
+          >
+            <div className="flex justify-between items-start">
+              <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-blue-500/20 group-hover:border-blue-500/50 transition-colors duration-500">
+                <LinkedinIcon className="w-5 h-5 text-white/50 group-hover:text-blue-400 transition-colors" />
+              </div>
+              <ArrowUpRight className="w-5 h-5 text-white/20 group-hover:text-blue-400 transition-colors transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+            </div>
             
-            <div className="font-mono text-xs md:text-sm space-y-2">
-              <div className="flex items-center gap-2 text-white/70">
-                <span className="text-teal-500">root@sys</span>:~$ ping -c 3 devojit.mandal
-              </div>
-              <div className="text-white/40 pl-4 space-y-1">
-                <div>PING devojit.mandal (BLR_INDIA): 56 data bytes</div>
-                <div>64 bytes from 1AY25EC045: icmp_seq=0 ttl=119 time=12.0 ms</div>
-                <div>64 bytes from 1AY25EC045: icmp_seq=1 ttl=119 time=11.8 ms</div>
-                <div>64 bytes from 1AY25EC045: icmp_seq=2 ttl=119 time=12.1 ms</div>
-                <div className="text-teal-500/70 pt-2">--- devojit.mandal ping statistics ---</div>
-                <div className="text-teal-500/70">3 packets transmitted, 3 packets received, 0.0% packet loss</div>
-              </div>
+            <div className="flex flex-col mt-8">
+              <span className="font-mono text-[10px] text-white/40 tracking-[0.2em] uppercase mb-1">
+                Professional_Network
+              </span>
+              <span className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">
+                LinkedIn
+              </span>
             </div>
+          </a>
 
-            <div className="font-mono text-xs md:text-sm space-y-2">
-              <div className="flex items-center gap-2 text-white/70">
-                <span className="text-teal-500">root@sys</span>:~$ list_external_nodes
+          {/* SECONDARY NODE 2: GITHUB */}
+          <a 
+            href="https://github.com/devojitmandal" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            
+            className="group flex flex-col justify-between p-8 rounded-xl bg-black/40 backdrop-blur-xl border border-white/10 hover:border-green-500/50 hover:bg-green-500/5 transition-all duration-500 min-h-[200px]"
+          >
+            <div className="flex justify-between items-start">
+              
+              <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-green-500/20 group-hover:border-green-500/50 transition-colors duration-500">
+                <GithubIcon className="w-5 h-5 text-white/50 group-hover:text-green-400 transition-colors" />
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                <a 
-                  href="https://www.linkedin.com/in/devojit-mandal/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="group flex items-center p-4 border border-white/10 bg-white/[0.02] hover:bg-blue-500/10 hover:border-blue-500/30 transition-all duration-300 rounded-sm"
-                >
-                  {/* USING THE NEW LINKEDIN SVG */}
-                  <LinkedinIcon className="w-5 h-5 text-white/40 group-hover:text-blue-400 mr-4 transition-colors" />
-                  <div className="flex flex-col flex-grow">
-                    <span className="font-mono text-xs text-white/70 group-hover:text-blue-400 uppercase tracking-widest transition-colors">LinkedIn_Network</span>
-                    <span className="font-mono text-[9px] text-white/30">ESTABLISH_CONNECTION</span>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-blue-400 opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-1" />
-                </a>
-
-                <a 
-                  href="https://github.com/devojitmandal" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="group flex items-center p-4 border border-white/10 bg-white/[0.02] hover:bg-white/10 hover:border-white/30 transition-all duration-300 rounded-sm"
-                >
-                  {/* USING THE NEW GITHUB SVG */}
-                  <GithubIcon className="w-5 h-5 text-white/40 group-hover:text-white mr-4 transition-colors" />
-                  <div className="flex flex-col flex-grow">
-                    <span className="font-mono text-xs text-white/70 group-hover:text-white uppercase tracking-widest transition-colors">Source_Repository</span>
-                    <span className="font-mono text-[9px] text-white/30">VIEW_ARCHITECTURE</span>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-white opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-1" />
-                </a>
-              </div>
+              <ArrowUpRight className="w-5 h-5 text-white/20 group-hover:text-green-400 transition-colors transform group-hover:translate-x-1 group-hover:-translate-y-1" />
             </div>
-
-            <div className="font-mono text-xs md:text-sm space-y-4 pt-4 border-t border-white/5">
-              <div className="flex items-center gap-2 text-white/70">
-                <span className="text-teal-500">root@sys</span>:~$ init_direct_message
-              </div>
+            
+            <div className="flex flex-col mt-8">
+              <span className="font-mono text-[10px] text-white/40 tracking-[0.2em] uppercase mb-1">
+                Source_Architecture
+              </span>
               
-              <div className="text-white/40 pl-4">
-                &gt; Secure channel opened. Enter payload below.
-              </div>
-
-              <form onSubmit={handleTerminalSubmit} className="relative mt-2">
-                <div className="flex items-start bg-black/40 border border-white/10 rounded-sm p-4 shadow-[inset_0_0_15px_rgba(0,0,0,1)] focus-within:border-teal-500/50 transition-colors">
-                  <span className="text-teal-500 mr-3 mt-1 font-bold">&gt;</span>
-                  <textarea 
-                    value={terminalInput}
-                    onChange={(e) => setTerminalInput(e.target.value)}
-                    placeholder="Type message here..."
-                    disabled={isTransmitting || transmissionComplete}
-                    className="w-full bg-transparent border-none outline-none text-white/80 placeholder:text-white/20 resize-none font-mono text-sm min-h-[80px]"
-                  />
-                </div>
-
-                <div className="flex justify-end mt-4">
-                  <button 
-                    type="submit"
-                    disabled={!terminalInput.trim() || isTransmitting || transmissionComplete}
-                    className="group relative flex items-center gap-2 px-6 py-2 bg-white/5 hover:bg-teal-500 border border-white/10 hover:border-teal-400 text-white/50 hover:text-black font-mono text-xs font-bold uppercase tracking-widest transition-all disabled:opacity-50 disabled:cursor-not-allowed rounded-sm"
-                  >
-                    Transmit_Payload
-                    <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-              </form>
-
-              <AnimatePresence>
-                {isTransmitting && (
-                  <motion.div 
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="pl-4 space-y-2 pt-2 text-amber-500/80 font-mono text-xs"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="w-3 h-3 animate-spin" />
-                      Encrypting payload...
-                    </div>
-                    <motion.div 
-                      initial={{ opacity: 0 }} 
-                      animate={{ opacity: 1 }} 
-                      transition={{ delay: 1 }}
-                      className="flex items-center gap-2"
-                    >
-                      <Loader2 className="w-3 h-3 animate-spin" />
-                      Routing to BLR_INDIA servers...
-                    </motion.div>
-                  </motion.div>
-                )}
-
-                {transmissionComplete && (
-                  <motion.div 
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="pl-4 space-y-2 pt-2 text-teal-400 font-mono text-xs"
-                  >
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-3 h-3" />
-                      Transmission successful. System administrator notified.
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              
-              <div ref={terminalEndRef} />
+              <span className="text-xl font-bold text-white group-hover:text-green-400 transition-colors">
+                GitHub
+              </span>
             </div>
+          </a>
 
-          </div>
         </div>
       </motion.div>
     </section>

@@ -1,56 +1,55 @@
 import { UfoGame3D } from "@/components/UfoGame3D";
-import { Navbar } from "@/components/Navbar";
+import { RoboNav } from "@/components/RoboNav";
 import { HeroSection } from "@/components/hero/HeroSection";
 import { SelectedWork } from "@/components/SelectedWork";
 import { AmbientStarfield } from "@/components/hero/AmbientStarfield";
-import { PassingStar } from "@/components/hero/PassingStar";
-import { DataStreamRibbon } from "@/components/DataStreamRibbon"; 
 import { AboutSection } from "@/components/AboutSection";
 import { StackSection } from "@/components/StackSection";
 import { TimelineSection } from "@/components/TimelineSection";
 import { ContactSection } from "@/components/ContactSection";
-export default function Home() {
-  return (
+import { Footer } from "@/components/Footer";
 
-    <main className="relative flex flex-col items-center overflow-x-hidden min-h-screen">
+export default function Home() {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <main className="relative flex flex-col items-center overflow-x-hidden min-h-screen bg-[#050505]">
       
-      {/* FULL-SCREEN CINEMATIC BACKGROUNDS */}
+      {/* 1. BACKGROUND LAYER */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <AmbientStarfield />
       </div>
 
-      {/* CENTERED 680px CONTENT COLUMN (Hero) */}
-      <div className="max-w-[680px] mx-auto px-6 relative z-10">
-        <Navbar />
-        <HeroSection />
-      </div>
-
-      {/* FULL WIDTH DATA STREAM SEPARATOR */}
-      {/* 2. Drop it outside the 680px div so it spans the whole monitor! */}
+      {/* 2. THE CINEMATIC & WIDE-SCREEN LAYER (Hero + SelectedWork) */}
+      {/* We keep these outside the 680px constraint to allow for full-bleed interactions */}
       <div className="w-full relative z-10">
-        <DataStreamRibbon />
+      <RoboNav />
+        <div className="max-w-[680px] mx-auto px-6">
+          <HeroSection />
+        </div>
+        
+        {/* SelectedWork takes the full width of the screen */}
+        <SelectedWork />
       </div>
 
-      {/* CENTERED 680px CONTENT COLUMN (Work) */}
-      {/* 3. Wrap SelectedWork in its own 680px container so it stays perfectly aligned */}
-      <div className="max-w-[680px] mx-auto px-6 relative z-10">
-        <SelectedWork />
+      {/* 3. THE TEXT-HEAVY CONTENT LAYER (About, Stack, Timeline, Contact) */}
+      <div className="max-w-[680px] w-full mx-auto px-6 relative z-0 py-16">
         <AboutSection />
         <StackSection />
-        <TimelineSection />
-        <ContactSection />
+        
+
       </div>
-      {/* THE GLOBAL SYSTEM FOOTER */}
-      <footer className="w-full relative z-10 border-t border-white/5 mt-20 py-12 flex flex-col items-center justify-center gap-4 bg-black/20 backdrop-blur-sm">
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-teal-500/60 flex items-center gap-3">
-          <span className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></span>
-          YES, AI HELPED BUILD THIS SITE. THAT'S THE POINT.
-        </div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/20 flex gap-6">
-          <span>DEVOJIT MANDAL © 2026</span>
-          <span>SYS_ARCH_BLR</span>
-        </div>
-      </footer>
+      <div className="w-full relative z-0">
+      <TimelineSection />
+
+      <ContactSection />
+      
+      {/* The Footer is now its own component! */}
+      <Footer />
+      </div>
+      
       <UfoGame3D />
     </main>
   );

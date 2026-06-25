@@ -1,319 +1,294 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, ChevronDown, CheckCircle2, Rocket, ImageIcon } from 'lucide-react';
+import { 
+  ArrowUpRight, 
+  ChevronDown, 
+  CheckCircle2, 
+  Rocket, 
+  ChevronLeft, 
+  ChevronRight,
+  Cpu,
+  Cloud,
+  Terminal, 
+  ShieldCheck, 
+  Globe, 
+  Database, 
+  Layout,
+  X
+} from 'lucide-react';
 import Image from "next/image";
 
-const projects = [
-  {
-    id: '01',
-    name: 'Advanced Biometric Watch v3.0',
-    shortDescription: 'Custom C firmware processing raw physiological sensor data directly at the edge.',
-    fullDescription: 'An embedded systems project built on the ESP32-C3 microcontroller. It bypasses heavy cloud computing by calculating physiological stress metrics in real-time directly on the hardware, requiring highly optimized memory management.',
-    workCompleted: [
-      'Firmware written in bare-metal C',
-      'Real-time data processing algorithms implemented',
-      'ESP32-C3 hardware integration verified'
-    ],
-    futurePlans: 'Design a custom PCB to shrink the physical footprint and write a companion React Native app via Bluetooth Low Energy (BLE).',
-    tags: [
-      { label: 'Hardware', style: 'bg-amber-500/10 text-amber-500 border-amber-500/20' },
-      { label: 'ESP32-C3', style: 'bg-amber-500/10 text-amber-500 border-amber-500/20' },
-      { label: 'C', style: 'bg-amber-500/10 text-amber-500 border-amber-500/20' },
-    ],
-    images: [
-      "/projects/Advanced-Biometric-Watch-v3.0.png",
-      "/projects/Advanced-Biometric-Watch-v3.0-2.png",
-    ],
-    githubUrl: 'https://github.com/devojitmandal/Advanced-Biometric-Watch-v3.0',
-  },
-  {
-    id: '02',
-    name: 'Student Management System',
-    shortDescription: 'Bare-metal C application implementing dynamic memory allocation and custom data structures.',
-    fullDescription: 'A pure software engineering challenge to build a persistent database system entirely from scratch in C. It uses low-level file I/O operations and advanced pointer arithmetic to manage memory without relying on modern database abstractions.',
-    workCompleted: [
-      'Dynamic memory allocation engine (malloc/free)',
-      'Custom linked-list data structures',
-      'Persistent file I/O storage system'
-    ],
-    futurePlans: 'Implement binary search trees (BST) to optimize the query speed for thousands of student records.',
-    tags: [
-      { label: 'Software', style: 'bg-teal-500/10 text-teal-400 border-teal-500/20' },
-      { label: 'C', style: 'bg-teal-500/10 text-teal-400 border-teal-500/20' },
-      { label: 'CLI', style: 'bg-gray-500/10 text-gray-400 border-gray-500/20' },
-    ],
-    images: [
-      "/projects/student-management.png",
-      "/projects/student-management-2.png",
-    ],
-    githubUrl: 'https://github.com/devojitmandal/Student-Management-System-in-C/blob/main/main.c',
-  },
-  {
-    id: '03',
-    name: 'Resilience Hub',
-    shortDescription: 'Mental wellness web app focused on user resilience and resource access.',
-    fullDescription: 'A full-stack mental wellness application. The entire architecture, user journey logic, UI, and backend flow were built in a single day using AI tools. It serves as a proof-of-concept for how fast AI-assisted development can go from idea to deployment.',
-    workCompleted: [
-      'End-to-end prototype deployed',
-      'AI-driven UI/UX generation',
-      'Backend data flow established'
-    ],
-    futurePlans: 'Migrate the authentication and database layer to Supabase for robust user state management.',
-    tags: [
-      { label: 'Web App', style: 'bg-teal-500/10 text-teal-400 border-teal-500/20' },
-      { label: 'AI-assisted', style: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
-    ],
-    images: [
-      "/projects/Resilience-Hub-Homepage.png",
-      "/projects/Resilience-Hub-Signup.png",
-    ],
-    githubUrl: 'https://github.com/devojitmandal/resiliencehub',
-  },
-  {
-    id: '04',
-    name: 'IoT Vital Signs Monitor',
-    shortDescription: 'Patient monitoring system built in C, simulating live hardware alerts.',
-    fullDescription: 'Simulated patient monitoring system in C on ESP32. Potentiometer-driven analog signals mimic real sensor data, with conditional logic triggering live alerts. Validated entirely in Wokwi before physical deployment.',
-    workCompleted: [
-      'Wokwi simulation fully operational',
-      'ADC sensor reading and mapping complete',
-      'Threshold-based LED/Buzzer alert system built'
-    ],
-    futurePlans: 'Integrate real MAX30102 pulse oximeter sensors and push telemetry data to a live cloud dashboard.',
-    tags: [
-      { label: 'ESP32', style: 'bg-amber-500/10 text-amber-500 border-amber-500/20' },
-      { label: 'Wokwi', style: 'bg-teal-500/10 text-teal-400 border-teal-500/20' },
-    ],
-    images: [
-      "/projects/iot-vital-signs-monitor.png",
-      "/projects/iot-vital-signs-monitor-2.png",
-    ],
-    githubUrl: 'https://github.com/devojitmandal/iot-vital-signs-monitor/blob/main/firmware.ino',
-    
-  },
-  {
-    id: '05',
-    name: 'Personal System Architecture',
-    shortDescription: 'Interactive hardware-themed web portfolio built with React and Framer Motion.',
-    fullDescription: 'A highly interactive web portfolio built from scratch using React, Next.js, Tailwind CSS, and Framer Motion. It features procedural physics engines for SVG shattering, scroll-linked data telemetry animations, and a secure mock bash terminal for contact.',
-    workCompleted: [
-      'Engineered procedural SVG fracture physics',
-      'Built scroll-bound timeline animations',
-      'Developed interactive Bash terminal interface'
-    ],
-    futurePlans: 'Deploy to Vercel, integrate Formspree for live terminal messaging, and optimize mobile responsive physics.',
-    tags: [
-      { label: 'Next.js', style: 'bg-white/10 text-white border-white/20' },
-      { label: 'Framer', style: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
-      { label: 'React', style: 'bg-teal-500/10 text-teal-400 border-teal-500/20' },
-    ],
-    images: [
-      "/projects/Personal-System-Architecture.png",
-      "/projects/Personal-System-Architecture-2.png",
-    ],
-    githubUrl: 'https://github.com/devojitmandal/my-portfolio-website',
-  },
+interface ProjectTag { label: string; style: string; }
+interface ProjectData {
+  id: string; name: string; shortDescription: string; fullDescription: string;
+  workCompleted: string[]; futurePlans: string; tags: ProjectTag[];
+  images: string[]; githubUrl: string; icon: any;
+}
+
+const projects: ProjectData[] = [
+  { id: '01', name: 'Advanced Biometric Watch v3.0', shortDescription: 'Custom C firmware processing raw physiological sensor data at the edge.', fullDescription: 'An embedded systems project built on the ESP32-C3 microcontroller. It bypasses heavy cloud computing by calculating physiological stress metrics in real-time directly on the hardware, requiring highly optimized memory management.', workCompleted: ['Firmware written in bare-metal C', 'Real-time data processing algorithms', 'ESP32-C3 hardware integration'], futurePlans: 'Design custom PCB and develop a companion BLE React Native app.', tags: [{ label: 'Hardware', style: 'bg-amber-500/10 text-amber-500 border-amber-500/20' }, { label: 'ESP32-C3', style: 'bg-amber-500/10 text-amber-500 border-amber-500/20' }], images: ["/projects/Advanced-Biometric-Watch-v3.0.png", "/projects/Advanced-Biometric-Watch-v3.0-2.png"], githubUrl: 'https://github.com/devojitmandal/Advanced-Biometric-Watch-v3.0', icon: Cpu },
+  { id: '02', name: 'Student Management System', shortDescription: 'Bare-metal C application implementing dynamic memory allocation.', fullDescription: 'A pure software engineering challenge to build a persistent database system entirely from scratch in C using low-level file I/O operations.', workCompleted: ['Dynamic memory allocation engine', 'Custom linked-list structures', 'Persistent storage I/O'], futurePlans: 'Implement binary search trees (BST) to optimize the query speed.', tags: [{ label: 'Software', style: 'bg-teal-500/10 text-teal-400 border-teal-500/20' }, { label: 'C', style: 'bg-teal-500/10 text-teal-400 border-teal-500/20' }], images: ["/projects/student-management.png", "/projects/student-management-2.png"], githubUrl: 'https://github.com/devojitmandal/Student-Management-System-in-C', icon: Database },
+  { id: '03', name: 'Resilience Hub', shortDescription: 'Mental wellness web app focused on user resilience and resource access.', fullDescription: 'A full-stack mental wellness application. The entire architecture, user journey logic, UI, and backend flow were built in a single day using AI tools.', workCompleted: ['End-to-end prototype deployed', 'AI-driven UI/UX', 'Backend data flow established'], futurePlans: 'Migrate the authentication and database layer to Supabase.', tags: [{ label: 'Web App', style: 'bg-teal-500/10 text-teal-400 border-teal-500/20' }, { label: 'AI-assisted', style: 'bg-purple-500/10 text-purple-400 border-purple-500/20' }], images: ["/projects/Resilience-Hub-Homepage.png", "/projects/Resilience-Hub-Signup.png"], githubUrl: 'https://github.com/devojitmandal/resiliencehub', icon: Terminal },
+  { id: '04', name: 'IoT Vital Signs Monitor', shortDescription: 'Patient monitoring system built in C, simulating live hardware alerts.', fullDescription: 'Simulated patient monitoring system in C on ESP32. Validated entirely in Wokwi before physical deployment.', workCompleted: ['Wokwi simulation operational', 'ADC sensor reading', 'Alert system built'], futurePlans: 'Integrate real MAX30102 pulse oximeter sensors.', tags: [{ label: 'ESP32', style: 'bg-amber-500/10 text-amber-500 border-amber-500/20' }, { label: 'Wokwi', style: 'bg-teal-500/10 text-teal-400 border-teal-500/20' }], images: ["/projects/iot-vital-signs-monitor.png", "/projects/iot-vital-signs-monitor-2.png"], githubUrl: 'https://github.com/devojitmandal/iot-vital-signs-monitor', icon: ShieldCheck },
+  { id: '05', name: 'Personal System Architecture', shortDescription: 'Interactive hardware-themed web portfolio.', fullDescription: 'A highly interactive web portfolio built from scratch using React, Next.js, and Framer Motion.', workCompleted: ['Procedural SVG fracture physics', 'Scroll-bound timeline', 'Bash terminal interface'], futurePlans: 'Optimize mobile responsive physics.', tags: [{ label: 'Next.js', style: 'bg-white/10 text-white border-white/20' }, { label: 'Framer', style: 'bg-purple-500/10 text-purple-400 border-purple-500/20' }], images: ["/projects/Personal-System-Architecture.png", "/projects/Personal-System-Architecture-2.png"], githubUrl: 'https://github.com/devojitmandal/my-portfolio-website', icon: Globe }
 ];
 
+const ProjectAccordion = ({ project, isExpanded, setSelectedImage }: { project: ProjectData, isExpanded: boolean, setSelectedImage: (img: string) => void }) => (
+  <AnimatePresence>
+    {isExpanded && (
+      <motion.div
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: 'auto', opacity: 1 }}
+        exit={{ height: 0, opacity: 0 }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
+        className="overflow-hidden"
+      >
+        <div className="pt-8 mt-6 border-t border-white/10">
+          <p className="text-[#888] text-sm leading-relaxed mb-8">{project.fullDescription}</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <div className="text-[10px] text-teal-500 mb-4 flex items-center gap-2"><CheckCircle2 size={12}/> WORK_COMPLETED</div>
+              <ul className="space-y-2">
+                {project.workCompleted.map((item, i) => (
+                  <li key={i} className="text-xs text-white/60 flex items-start gap-2">
+                    <span className="text-teal-500/50">›</span> {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <div className="text-[10px] text-amber-500 mb-4 flex items-center gap-2"><Rocket size={12}/> ROADMAP</div>
+              <p className="text-xs text-white/60 leading-relaxed">{project.futurePlans}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            {project.images.map((img, i) => (
+              <div 
+                key={i} 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedImage(img);
+                }}
+                className="relative h-32 rounded border border-white/10 overflow-hidden cursor-zoom-in group"
+              >
+                <Image 
+                  src={img} 
+                  alt="Project work" 
+                  fill 
+                  className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500" 
+                />
+              </div>
+            ))}
+          </div>
+
+          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" 
+             className="inline-flex items-center gap-2 text-xs font-mono text-teal-400 hover:text-white transition-colors">
+            VIEW_SOURCE <ArrowUpRight size={12}/>
+          </a>
+        </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
 export function SelectedWork() {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  
+  const scrollLock = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const changeIndex = (newIndex: number) => {
+    setIsExpanded(false);
+    setActiveIndex(newIndex);
+  };
+
+  const lockScroll = () => {
+    scrollLock.current = true;
+    setTimeout(() => { scrollLock.current = false; }, 600); 
+  };
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleNativeWheel = (e: WheelEvent) => {
+      // THE FIX: Added `isExpanded` to this bypass rule!
+      // If modal is open, on mobile, OR if the card is expanded, let the page scroll normally.
+      if (selectedImage || window.innerWidth < 768 || isExpanded) return; 
+
+      const isAtStart = activeIndex === 0 && e.deltaY < 0;
+      const isAtEnd = activeIndex === projects.length - 1 && e.deltaY > 0;
+
+      if (isAtStart || isAtEnd) return; 
+
+      e.preventDefault();
+
+      if (scrollLock.current) return;
+
+      if (Math.abs(e.deltaY) > 30) {
+        if (e.deltaY > 0) {
+          changeIndex(activeIndex + 1);
+          lockScroll();
+        } else if (e.deltaY < 0) {
+          changeIndex(activeIndex - 1);
+          lockScroll();
+        }
+      }
+    };
+
+    container.addEventListener("wheel", handleNativeWheel, { passive: false });
+    return () => container.removeEventListener("wheel", handleNativeWheel);
+    
+    // THE FIX: Make sure to add `isExpanded` to the dependency array so the hook updates when you click!
+  }, [activeIndex, selectedImage, isExpanded]); 
+
 
   return (
-    <section id="work" className="w-full py-20 border-t-[0.5px] border-white/10 relative z-30 bg-transparent">
+    <section id="work" className="w-full py-24 relative z-30 bg-transparent overflow-hidden">
       
-      {/* Section Header */}
-      <div className="flex justify-between items-baseline mb-10 w-full">
-        <div className="text-[11px] font-mono text-[#888] tracking-[0.14em]">
-          // SELECTED WORK
+      <div className="flex justify-between items-baseline mb-20 w-full max-w-5xl mx-auto px-6">
+        <div className="text-[11px] font-mono text-[#888] tracking-[0.14em] flex items-center gap-2">
+            <Layout className="w-3 h-3" /> // SELECTED_ARCHIVE
         </div>
-        <div className="text-[11px] font-mono text-white/30">
-        0{projects.length} projects
+        <div className="flex gap-4">
+            <button onClick={() => changeIndex(Math.max(0, activeIndex - 1))} className="text-white/50 hover:text-teal-400 transition-colors">
+                <ChevronLeft className="w-6 h-6" />
+            </button>
+            <button onClick={() => changeIndex(Math.min(projects.length - 1, activeIndex + 1))} className="text-white/50 hover:text-teal-400 transition-colors">
+                <ChevronRight className="w-6 h-6" />
+            </button>
         </div>
       </div>
 
-      {/* Projects Grid */}
-      <div 
-      className="grid grid-cols-1 gap-[1px] bg-white/10 border-[0.5px] border-white/10 rounded-xl overflow-hidden w-full"
-      style={{ perspective: "1000px" }}
+      <motion.div 
+        ref={containerRef}
+        animate={{ height: isExpanded ? 900 : 320 }}
+        transition={{ type: "spring", stiffness: 150, damping: 30 }}
+        className="relative w-full flex justify-center [perspective:1200px]"
       >
-      {projects.map((project, index) => { 
-        const isExpanded = expandedId === project.id;
+        {projects.map((project, index) => {
+          const offset = index - activeIndex;
+          const isActive = index === activeIndex;
 
           return (
-            <motion.div 
+            <motion.div
               key={project.id}
-              onClick={() => setExpandedId(isExpanded ? null : project.id)}
-              // 1. THE SERVER BLADE HINGE PHYSICS
-              initial={{ opacity: 0, rotateX: -45, y: -20, filter: "blur(4px)" }}
-              whileInView={{ opacity: 1, rotateX: 0, y: 0, filter: "blur(0px)" }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ 
-                delay: index * 0.15,
-                type: "spring", 
-                stiffness: 120, 
-                damping: 14,
-                mass: 1.2
+              onClick={() => { if (isActive) setIsExpanded(!isExpanded); else changeIndex(index); }}
+              layout 
+              className={`absolute top-0 w-[85%] md:w-[450px] bg-black/40 backdrop-blur-xl border rounded-xl p-8 shadow-2xl cursor-pointer transition-colors duration-500 ${
+                isActive ? 'border-teal-500/50 z-50' : 'border-white/5 hover:border-white/20 z-0'
+              }`}
+              animate={{
+                x: offset * 40,
+                z: -Math.abs(offset) * 150,
+                rotateY: offset * -15,
+                scale: isActive ? 1 : 0.8,
+                opacity: isActive ? 1 : 0.3,
+                filter: isActive ? "blur(0px)" : "blur(4px)",
               }}
-              style={{ transformOrigin: "top" }} // Forces the box to swing down from its top edge
-              className="group relative bg-[#0a0a0a] p-6 sm:p-8 cursor-pointer transition-colors duration-300 hover:bg-white/[0.02] overflow-hidden"
+              transition={{ type: "spring", stiffness: 150, damping: 30 }}
             >
-              
-              {/* 2. THE INITIALIZATION LASER SWEEP */}
-              <motion.div
-                initial={{ left: "-10%" }}
-                whileInView={{ left: "110%" }}
-                viewport={{ once: true }}
-                // Triggers exactly as the spring bounce settles
-                transition={{ duration: 0.6, delay: index * 0.15 + 0.3, ease: "linear" }}
-                className="absolute top-0 bottom-0 w-[2px] bg-teal-400 shadow-[0_0_20px_#2dd4bf] z-50 pointer-events-none mix-blend-screen"
-              />
-
-              {/* TOP ROW: ID & Tags */}
-              <div className="relative z-10 flex justify-between items-start mb-4">
-                <div className="text-[11px] font-mono text-white/30 pt-1">
-                  {project.id} &mdash;
-                </div>
-                <div className="flex gap-2 flex-wrap justify-end max-w-[75%]">
-                  {project.tags.map((tag, i) => (
-                    <motion.span 
-                    key={i} 
-                    // 1. THE FLICKER BOOT SEQUENCE
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ 
-                      opacity: [0, 1, 0.2, 1], // Rapid electrical flicker
-                      scale: 1 
-                    }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{
-                      duration: 0.4,
-                      // 2. THE TIMING MATH: Waits for the card to drop (index * 0.15) + waits for the laser (0.4) + staggers each tag (i * 0.1)
-                      delay: (index * 0.15) + 0.4 + (i * 0.1), 
-                      times: [0, 0.4, 0.6, 1],
-                      ease: "easeInOut"
-                    }}
-                    className={`text-[10px] font-mono px-2 py-1 border-[0.5px] rounded tracking-[0.06em] cursor-default shadow-[0_0_1px_currentColor,inset_0_0_2px_currentColor] [text-shadow:0_0_2px_currentColor] ${tag.style}`}
-                  >
-                    {tag.label}
-                  </motion.span>
-                  ))}
-                </div>
-              </div>
-
-              {/* ALWAYS VISIBLE CONTENT */}
-              <div className="relative z-10 flex justify-between items-end">
-                <div className="max-w-[85%]">
-                  <h3 className="text-xl font-semibold tracking-tight text-[#fafaf8] mb-2 group-hover:text-teal-400 transition-colors">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-2">
+                    <project.icon className={`w-5 h-5 ${isActive ? 'text-teal-400' : 'text-white/30'}`} />
+                    <span className="text-[10px] font-mono text-white/40">{project.id}</span>
+                  </div>
+                  <h3 className={`text-2xl font-bold transition-colors ${isActive ? 'text-white' : 'text-white/50'}`}>
                     {project.name}
                   </h3>
-                  <p className="text-[14px] text-[#888] leading-relaxed">
-                    {project.shortDescription}
-                  </p>
                 </div>
                 
-                {/* Expand Icon */}
-                <div className="text-white/20 transition-all duration-300 group-hover:text-teal-400">
-                  <motion.div animate={{ rotate: isExpanded ? 180 : 0 }}>
-                    <ChevronDown className="w-5 h-5" />
-                  </motion.div>
-                </div>
+                {isActive && (
+                   <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.3 }}>
+                     <ChevronDown className="text-white/30" />
+                   </motion.div>
+                )}
               </div>
 
-              {/* EXPANDABLE DEEP DIVE SECTION */}
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="overflow-hidden relative z-10"
-                  >
-                    <div className="pt-8 mt-6 border-t-[0.5px] border-white/10">
-                      
-                      {/* Full Description */}
-                      <p className="text-[14px] text-[#fafaf8] leading-relaxed mb-8">
-                        {project.fullDescription}
-                      </p>
+              <p className="text-[#888] text-sm leading-relaxed mb-6">{project.shortDescription}</p>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                        {/* Status / Work Done */}
-                        <div>
-                          <div className="text-[10px] font-mono text-[#888] tracking-[0.14em] mb-4 flex items-center gap-2">
-                            <CheckCircle2 className="w-3 h-3 text-teal-500" /> STATUS
-                          </div>
-                          <ul className="space-y-3">
-                            {project.workCompleted.map((item, i) => (
-                              <li key={i} className="text-[13px] text-[#888] flex items-start gap-2">
-                                <span className="text-white/20 mt-[2px]">-</span> {item}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+              <div className="flex gap-2 mb-4">
+                {project.tags.map((tag, i) => (
+                  <span key={i} className={`text-[9px] font-mono px-2 py-1 border rounded ${tag.style}`}>
+                    {tag.label}
+                  </span>
+                ))}
+              </div>
 
-                        {/* Future Roadmap */}
-                        <div>
-                          <div className="text-[10px] font-mono text-[#888] tracking-[0.14em] mb-4 flex items-center gap-2">
-                            <Rocket className="w-3 h-3 text-amber-500" /> ROADMAP
-                          </div>
-                          <p className="text-[13px] text-[#888] leading-relaxed">
-                            {project.futurePlans}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Image Gallery Placeholders */}
-                      <div className="text-[10px] font-mono text-[#888] tracking-[0.14em] mb-4 flex items-center gap-2">
-                        <ImageIcon className="w-3 h-3 text-purple-500" /> PROOF OF WORK
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-3">
-                        {/* Image 1 */}
-                        <div className="relative w-full h-64 overflow-hidden rounded-md border-[0.5px] border-white/10">
-                          <Image 
-                            src={project.images[0]}
-                            alt={`Screenshot of ${project.name}`}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                        </div>
-                        
-                        {/* Image 2 */}
-                        <div className="relative w-full h-64 overflow-hidden rounded-md border-[0.5px] border-white/10">
-                          <Image 
-                            src={project.images[1]}
-                            alt={`Screenshot of ${project.name} (alternate view)`}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                        </div>
-                      </div>
-
-                      {/* View Source Button */}
-                      <div className="mt-8 flex justify-end">
-                        <a 
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-[12px] font-medium text-[#fafaf8] bg-white/5 px-4 py-2 rounded border-[0.5px] border-white/10 transition-colors hover:bg-white/10"
-                        >
-                          View Code <ArrowUpRight className="w-3 h-3" />
-                        </a>
-                      </div>
-
-                    </div>
-                  </ motion.div>
-                )}
-              </AnimatePresence>
-
-            </ motion.div>
+              <ProjectAccordion 
+                project={project} 
+                isExpanded={isActive && isExpanded} 
+                setSelectedImage={setSelectedImage} 
+              />
+              
+            </motion.div>
           );
         })}
-
+      </motion.div>
+      
+      <div className="flex justify-center items-center gap-6 mt-12 relative z-50">
+        {projects.map((_, i) => {
+          const isActive = i === activeIndex;
+          
+          return (
+            <button 
+                key={i} 
+                onClick={() => changeIndex(i)}
+                className={`font-mono text-sm transition-all duration-300 ${
+                  isActive 
+                    ? 'text-teal-400 scale-150 font-bold drop-shadow-[0_0_12px_rgba(45,212,191,0.8)]' 
+                    : 'text-white/30 hover:text-white/70 hover:scale-110'
+                }`} 
+            >
+              0{i + 1}
+            </button>
+          );
+        })}
       </div>
+
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => setSelectedImage(null)}
+            className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/90 backdrop-blur-md cursor-zoom-out p-4 md:p-12"
+          >
+            <button 
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-6 right-6 md:top-12 md:right-12 text-white/50 hover:text-white transition-colors z-50"
+            >
+              <X className="w-8 h-8" />
+            </button>
+
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              transition={{ type: "spring", stiffness: 200, damping: 25 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-[90vw] h-[80vh] md:max-w-6xl rounded-xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] cursor-default"
+            >
+              <Image 
+                src={selectedImage} 
+                alt="Enlarged view" 
+                fill 
+                className="object-contain" 
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
     </section>
   );
 }
